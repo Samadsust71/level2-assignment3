@@ -3,18 +3,18 @@ import { BookModel, genres, IBook } from "../interfaces/book.interface";
 
 const bookSchema = new Schema<IBook>(
   {
-    title: { type: String, required: true },
-    author: { type: String, required: true },
+    title: { type: String, required: [true, "Book title is required"] },
+    author: { type: String, required: [true, "Book author name is required"] },
     genre: {
       type: String,
-      required: true,
+      required: [true, "Genre is required, got {VALUE}"],
       enum: genres,
     },
-    isbn: { type: String, required: true, unique: true },
+    isbn: { type: String, required: [true, "isbn is required"], unique: [true, "Duplication found in isbn, isbn must be unique"] },
     description: { type: String },
     copies: {
       type: Number,
-      required: true,
+      required: [true, "Number of book copies is required"],
       min: [0, "Copies must be a positive number"],
     },
     available: { type: Boolean, default: true },

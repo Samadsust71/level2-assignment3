@@ -7,9 +7,6 @@ export const borrowRoutes = express.Router();
 borrowRoutes.post("/", async (req: Request, res: Response) => {
   try {
     const { book, quantity, dueDate } = req.body;
-
-    await Book.borrowCopies(book, quantity);
-
     const borrowRecord = await Borrow.create({ book, quantity, dueDate });
 
     res.status(201).send({
