@@ -28,8 +28,8 @@ A robust RESTful API for managing library books and borrowings, built with **Exp
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/library-management-api.git
-cd library-management-api
+git clone https://github.com/Samadsust71/level2-assignment3.git
+cd level2-assignment3
 ```
 
 ### 2. Install Dependencies
