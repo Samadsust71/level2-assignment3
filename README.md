@@ -1,4 +1,4 @@
-# 📚 Library Management API
+# 📚 Library Management APP
 
 A robust RESTful API for managing library books and borrowings, built with **Express**, **TypeScript**, and **MongoDB** using **Mongoose**.
 
