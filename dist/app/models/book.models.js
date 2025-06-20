@@ -13,18 +13,18 @@ exports.Book = void 0;
 const mongoose_1 = require("mongoose");
 const book_interface_1 = require("../interfaces/book.interface");
 const bookSchema = new mongoose_1.Schema({
-    title: { type: String, required: true },
-    author: { type: String, required: true },
+    title: { type: String, required: [true, "Book title is required"] },
+    author: { type: String, required: [true, "Book author name is required"] },
     genre: {
         type: String,
-        required: true,
+        required: [true, "Genre is required, got {VALUE}"],
         enum: book_interface_1.genres,
     },
-    isbn: { type: String, required: true, unique: true },
+    isbn: { type: String, required: [true, "isbn is required"], unique: [true, "Duplication found in isbn, isbn must be unique"] },
     description: { type: String },
     copies: {
         type: Number,
-        required: true,
+        required: [true, "Number of book copies is required"],
         min: [0, "Copies must be a positive number"],
     },
     available: { type: Boolean, default: true },

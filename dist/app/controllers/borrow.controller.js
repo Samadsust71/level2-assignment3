@@ -14,14 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.borrowRoutes = void 0;
 const express_1 = __importDefault(require("express"));
-const book_models_1 = require("../models/book.models");
 const borrow_models_1 = require("../models/borrow.models");
 exports.borrowRoutes = express_1.default.Router();
 // create borrowed book data
 exports.borrowRoutes.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { book, quantity, dueDate } = req.body;
-        yield book_models_1.Book.borrowCopies(book, quantity);
         const borrowRecord = yield borrow_models_1.Borrow.create({ book, quantity, dueDate });
         res.status(201).send({
             success: true,
