@@ -1,5 +1,6 @@
 import { model, ObjectId, Schema } from "mongoose";
 import { BookModel, genres, IBook } from "../interfaces/book.interface";
+import { Borrow } from "./borrow.models";
 
 const bookSchema = new Schema<IBook>(
   {
@@ -41,4 +42,10 @@ bookSchema.statics.borrowCopies = async function (
 
   return book;
 };
+
+bookSchema.post("findOneAndDelete", async function(deletedDoc) {
+  if (deletedDoc) {
+    await Borrow.deleteMany({ book: deletedDoc._id });
+  }
+});
 export const Book = model<IBook,BookModel>("Book", bookSchema);

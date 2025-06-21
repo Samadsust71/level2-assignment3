@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Book = void 0;
 const mongoose_1 = require("mongoose");
 const book_interface_1 = require("../interfaces/book.interface");
+const borrow_models_1 = require("./borrow.models");
 const bookSchema = new mongoose_1.Schema({
     title: { type: String, required: [true, "Book title is required"] },
     author: { type: String, required: [true, "Book author name is required"] },
@@ -46,4 +47,11 @@ bookSchema.statics.borrowCopies = function (bookId, quantity) {
         return book;
     });
 };
+bookSchema.post("findOneAndDelete", function (deletedDoc) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (deletedDoc) {
+            yield borrow_models_1.Borrow.deleteMany({ book: deletedDoc._id });
+        }
+    });
+});
 exports.Book = (0, mongoose_1.model)("Book", bookSchema);
