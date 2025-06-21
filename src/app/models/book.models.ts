@@ -29,7 +29,7 @@ bookSchema.statics.borrowCopies = async function (
   quantity: number
 ) {
   const book = await this.findById(bookId);
-  if (!book) throw new Error('Book not found');
+  if (!book) throw new Error('Book not found, please provide a valid bookId');
 
   if (book.copies < quantity) {
     throw new Error(`Only ${book.copies} copies available`);

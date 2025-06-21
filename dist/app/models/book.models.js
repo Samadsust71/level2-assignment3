@@ -36,7 +36,7 @@ bookSchema.statics.borrowCopies = function (bookId, quantity) {
     return __awaiter(this, void 0, void 0, function* () {
         const book = yield this.findById(bookId);
         if (!book)
-            throw new Error('Book not found');
+            throw new Error('Book not found, please provide a valid bookId');
         if (book.copies < quantity) {
             throw new Error(`Only ${book.copies} copies available`);
         }
