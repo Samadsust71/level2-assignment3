@@ -28,6 +28,7 @@ borrowRoutes.get("/", async (req: Request, res: Response) => {
         $group: {
           _id: "$book",
           totalQuantity: { $sum: "$quantity" },
+          dueDates: { $push: "$dueDate" }
         },
       },
       // stage-2
@@ -50,8 +51,10 @@ borrowRoutes.get("/", async (req: Request, res: Response) => {
           book: {
             title: "$book.title",
             isbn: "$book.isbn",
+          
           },
           totalQuantity: 1,
+          dueDates:1
         },
       },
     ]);

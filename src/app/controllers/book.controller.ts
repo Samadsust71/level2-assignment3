@@ -21,7 +21,7 @@ bookRoutes.post("/", async (req: Request, res: Response) => {
   }
 });
 
-// get all books
+// get all books with pagination
 bookRoutes.get("/", async (req: Request, res: Response) => {
   try {
     const {
@@ -29,7 +29,12 @@ bookRoutes.get("/", async (req: Request, res: Response) => {
       sortBy = "createdAt",
       sort = "desc",
       limit = "10",
+      page = "1",
     } = req.query;
+
+    const parsedLimit = parseInt(limit as string);
+    const parsedPage = parseInt(page as string);
+    const skip = (parsedPage - 1) * parsedLimit;
 
     const query: any = {};
     if (filter) query.genre = filter;
@@ -38,17 +43,26 @@ bookRoutes.get("/", async (req: Request, res: Response) => {
 
     const books = await Book.find(query)
       .sort({ [sortBy as string]: sortOrder })
-      .limit(parseInt(limit as string));
+      .skip(skip)
+      .limit(parsedLimit);
+
+    const total = await Book.countDocuments(query);
 
     res.send({
       success: true,
       message: "Books retrieved successfully",
+      meta: {
+        totalItems: total,
+        totalPages: Math.ceil(total / parsedLimit),
+        currentPage: parsedPage,
+      },
       data: books,
     });
   } catch (error: any) {
-    res.status(500).send({ success: false, message: error.message ,error});
+    res.status(500).send({ success: false, message: error.message, error });
   }
 });
+
 
 // get a book by Id
 bookRoutes.get("/:bookId", async (req: Request, res: Response) => {
