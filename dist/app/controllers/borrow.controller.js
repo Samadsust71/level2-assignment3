@@ -40,6 +40,7 @@ exports.borrowRoutes.get("/", (req, res) => __awaiter(void 0, void 0, void 0, fu
                 $group: {
                     _id: "$book",
                     totalQuantity: { $sum: "$quantity" },
+                    dueDates: { $push: "$dueDate" }
                 },
             },
             // stage-2
@@ -62,6 +63,7 @@ exports.borrowRoutes.get("/", (req, res) => __awaiter(void 0, void 0, void 0, fu
                         isbn: "$book.isbn",
                     },
                     totalQuantity: 1,
+                    dueDates: 1
                 },
             },
         ]);

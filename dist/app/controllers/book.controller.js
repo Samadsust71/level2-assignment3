@@ -35,20 +35,30 @@ exports.bookRoutes.post("/", (req, res) => __awaiter(void 0, void 0, void 0, fun
         });
     }
 }));
-// get all books
+// get all books with pagination
 exports.bookRoutes.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { filter, sortBy = "createdAt", sort = "desc", limit = "10", } = req.query;
+        const { filter, sortBy = "createdAt", sort = "desc", limit = "10", page = "1", } = req.query;
+        const parsedLimit = parseInt(limit);
+        const parsedPage = parseInt(page);
+        const skip = (parsedPage - 1) * parsedLimit;
         const query = {};
         if (filter)
             query.genre = filter;
         const sortOrder = sort === "asc" ? 1 : -1;
         const books = yield book_models_1.Book.find(query)
             .sort({ [sortBy]: sortOrder })
-            .limit(parseInt(limit));
+            .skip(skip)
+            .limit(parsedLimit);
+        const total = yield book_models_1.Book.countDocuments(query);
         res.send({
             success: true,
             message: "Books retrieved successfully",
+            meta: {
+                totalItems: total,
+                totalPages: Math.ceil(total / parsedLimit),
+                currentPage: parsedPage,
+            },
             data: books,
         });
     }
