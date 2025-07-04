@@ -21,11 +21,13 @@ bookRoutes.post("/", async (req: Request, res: Response) => {
   }
 });
 
-// get all books with pagination
+// get all books 
 bookRoutes.get("/", async (req: Request, res: Response) => {
   try {
     const {
-      filter,
+      search,
+      genre,
+      status,
       sortBy = "createdAt",
       sort = "desc",
       limit = "10",
@@ -37,7 +39,28 @@ bookRoutes.get("/", async (req: Request, res: Response) => {
     const skip = (parsedPage - 1) * parsedLimit;
 
     const query: any = {};
-    if (filter) query.genre = filter;
+
+    // Search
+    if (search) {
+      const regex = new RegExp(search as string, "i");
+      query.$or = [
+        { title: regex },
+        { author: regex },
+        { isbn: regex },
+      ];
+    }
+
+    // Genre filter
+    if (genre && genre !== "all") {
+      query.genre = genre;
+    }
+
+    // Availability status
+    if (status === "available") {
+      query.copies = { $gt: 0 };
+    } else if (status === "unavailable") {
+      query.copies = 0;
+    }
 
     const sortOrder = sort === "asc" ? 1 : -1;
 

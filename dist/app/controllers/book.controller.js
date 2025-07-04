@@ -35,16 +35,34 @@ exports.bookRoutes.post("/", (req, res) => __awaiter(void 0, void 0, void 0, fun
         });
     }
 }));
-// get all books with pagination
+// get all books 
 exports.bookRoutes.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { filter, sortBy = "createdAt", sort = "desc", limit = "10", page = "1", } = req.query;
+        const { search, genre, status, sortBy = "createdAt", sort = "desc", limit = "10", page = "1", } = req.query;
         const parsedLimit = parseInt(limit);
         const parsedPage = parseInt(page);
         const skip = (parsedPage - 1) * parsedLimit;
         const query = {};
-        if (filter)
-            query.genre = filter;
+        // Search
+        if (search) {
+            const regex = new RegExp(search, "i");
+            query.$or = [
+                { title: regex },
+                { author: regex },
+                { isbn: regex },
+            ];
+        }
+        // Genre filter
+        if (genre && genre !== "all") {
+            query.genre = genre;
+        }
+        // Availability status
+        if (status === "available") {
+            query.copies = { $gt: 0 };
+        }
+        else if (status === "unavailable") {
+            query.copies = 0;
+        }
         const sortOrder = sort === "asc" ? 1 : -1;
         const books = yield book_models_1.Book.find(query)
             .sort({ [sortBy]: sortOrder })
